@@ -16,8 +16,31 @@ $dir = __DIR__;
 if ($_FILES)
 {
     $name = $_FILES['filename']['name'];
-    echo "файл: " .$_FILES['filename']['name'];
-    move_uploaded_file($_FILES['filename']['name'], $name);
-    echo "Загруженное изображение '$name' <br><img src='$name'>";
+    $name = strtolower(preg_replace("[^A-Za-z0-9.]", "", $name));
+
+    switch ($_FILES['filename']['type'])
+    {
+        case 'image/jpeg': $ext = 'jpg'; break;
+        case 'image/gif': $ext = 'gif'; break;
+        case 'image/png': $ext = 'png'; break;
+        case 'image/tiff': $ext = 'tif'; break;
+        default: $ext = ''; break;
+    }
+    if($ext)
+    {
+        $n = "image.$ext";
+        move_uploaded_file($_FILES['filename']['tmp_name'], "img/".$n);
+        echo "Загруженное изображение '$name' под именем '$n' <br>" . '<img src=img/' . $n . ">";
+    }
+    else
+    {
+        echo "'$name' - неприемлемый файл изображения";
+    }
+
+
+}
+else
+{
+    echo "Загрузки изображения ек произошло";
 }
 echo "</body></html>";
